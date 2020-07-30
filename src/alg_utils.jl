@@ -90,6 +90,9 @@ alg_order(alg::SMEA) = 1//1
 alg_order(alg::SIEB) = 1//1
 alg_order(alg::SMEB) = 1//1
 
+# extrapolation
+alg_order(alg::EXEM) = 1//2
+
 
 alg_order(alg::TauLeaping) = 1//1
 alg_order(alg::CaoTauLeaping) = 1//1
@@ -161,6 +164,7 @@ alg_compatible(prob::DiffEqBase.AbstractSDEProblem,alg::SIEA) = is_diagonal_nois
 alg_compatible(prob::DiffEqBase.AbstractSDEProblem,alg::SMEA) = is_diagonal_noise(prob)
 alg_compatible(prob::DiffEqBase.AbstractSDEProblem,alg::SIEB) = is_diagonal_noise(prob)
 alg_compatible(prob::DiffEqBase.AbstractSDEProblem,alg::SMEB) = is_diagonal_noise(prob)
+alg_compatible(prob::DiffEqBase.AbstractSDEProblem,alg::EXEM) = true
 alg_compatible(prob::DiffEqBase.AbstractSDEProblem,alg::SKenCarp) = true
 alg_compatible(prob::DiffEqBase.AbstractSDEProblem,alg::EM) = true
 alg_compatible(prob::DiffEqBase.AbstractSDEProblem,alg::LambaEM) = true

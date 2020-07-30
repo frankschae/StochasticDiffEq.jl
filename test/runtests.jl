@@ -94,6 +94,7 @@ const is_APPVEYOR = Sys.iswindows() && haskey(ENV,"APPVEYOR")
 
   if !is_APPVEYOR && (GROUP == "All" || GROUP == "WeakConvergence5")
     @time @safetestset "SIE SME weak Tests" begin include("weak_convergence/SIE_SME.jl") end
+    @time @safetestset "EXEM weak Tests" begin include("weak_convergence/extrapolation.jl") end
   end
 
   if !is_APPVEYOR && GROUP == "WeakAdaptive"

@@ -73,6 +73,7 @@ module StochasticDiffEq
   include("caches/cache_types.jl")
   include("caches/basic_method_caches.jl")
   include("caches/explicit_3s_mil_methods.jl")
+  include("caches/extrapolation_caches.jl")
   include("caches/lamba_caches.jl")
   include("caches/iif_caches.jl")
   include("caches/sdirk_caches.jl")
@@ -97,6 +98,7 @@ module StochasticDiffEq
   include("initdt.jl")
   include("perform_step/low_order.jl")
   include("perform_step/explicit_3s_mil_methods.jl")
+  include("perform_step/extrapolation_perform_step.jl")
   include("perform_step/lamba.jl")
   include("perform_step/iif.jl")
   include("perform_step/sri.jl")
@@ -132,7 +134,7 @@ module StochasticDiffEq
          PL1WM, PL1WMA,
          NON, COM
 
-  export SIEA, SMEA, SIEB, SMEB    
+  export SIEA, SMEA, SIEB, SMEB
 
   export EulerHeun, LambaEulerHeun
 
@@ -149,6 +151,8 @@ module StochasticDiffEq
          StochasticDiffEqRODECompositeAlgorithm
 
   export RandomEM
+
+  export EXEM
 
   export IteratedIntegralApprox, IICommutative, IIWiktorsson
 

@@ -364,6 +364,19 @@ struct SMEB <: StochasticDiffEqAlgorithm end
 
 ################################################################################
 
+# Extrapolation
+
+struct EXEM <: StochasticDiffEqAlgorithm
+  sequence::Symbol
+  order::Int
+end
+function EXEM(;sequence=:Romberg, order=2)
+  EXEM(sequence,order)
+end
+
+
+################################################################################
+
 # IIF
 
 struct IIF1M{F} <: StochasticDiffEqAlgorithm
