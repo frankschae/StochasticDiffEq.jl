@@ -1,4 +1,24 @@
-struct EXEMConstantCache <: StochasticDiffEqConstantCache end
+struct EXEMConstantCache{SeqType} <: StochasticDiffEqConstantCache
+  # hard-coded Romberg sequence
+  R1::SeqType
+  R2::SeqType
+  R3::SeqType
+  R4::SeqType
+  R5::SeqType
+end
+
+function EXEMConstantCache(order, T::Type)
+
+  R1 = convert(T, 1//2)
+  R2 = convert(T, -1)
+  R3 = convert(T, 2)
+  R4 = convert(T, 342//491)
+  R5 = convert(T, 342//491)
+
+  EXEMConstantCache()
+end
+
+
 @cache struct EXEMCache{uType,rateType,rateNoiseType} <: StochasticDiffEqMutableCache
   u::uType
   uprev::uType
@@ -7,7 +27,24 @@ struct EXEMConstantCache <: StochasticDiffEqConstantCache end
   rtmp2::rateNoiseType
 end
 
-alg_cache(alg::EXEM,prob,u,ΔW,ΔZ,p,rate_prototype,noise_rate_prototype,jump_rate_prototype,uEltypeNoUnits,uBottomEltypeNoUnits,tTypeNoUnits,uprev,f,t,dt,::Type{Val{false}}) = EXEMConstantCache()
+function alg_cache(alg::EXEM,prob,u,ΔW,ΔZ,p,rate_prototype,noise_rate_prototype,jump_rate_prototype,uEltypeNoUnits,uBottomEltypeNoUnits,tTypeNoUnits,uprev,f,t,dt,::Type{Val{false}})
+    if alg.order == 1
+      R1::T
+      R2::T
+      R3::T
+      R4::T
+      R5::T
+    elseif alg.order == 2
+
+    elseif alg.order == 3
+
+    elseif alg.order == 4
+
+    elseif alg.order == 5
+
+    end
+    EXEMConstantCache(alg.order, real(uBottomEltypeNoUnits))
+end
 
 function alg_cache(alg::EXEM,prob,u,ΔW,ΔZ,p,rate_prototype,noise_rate_prototype,jump_rate_prototype,uEltypeNoUnits,uBottomEltypeNoUnits,tTypeNoUnits,uprev,f,t,dt,::Type{Val{true}})
   tmp = zero(u); rtmp1 = zero(rate_prototype);
