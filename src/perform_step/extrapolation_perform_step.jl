@@ -1,14 +1,27 @@
 @muladd function perform_step!(integrator,cache::EXEMConstantCache,f=integrator.f)
   @unpack t,dt,uprev,u,W,p = integrator
+  @unpack expcoef = cache
 
-  K = uprev .+ dt .* integrator.f(uprev,p,t)
+  order = integrator.alg.order
+  expcoeforder = @view expcoef[:,order]
+  u = zero(integrator.u)
 
-  if !is_diagonal_noise(integrator.sol.prob) || typeof(W.dW) <: Number
-    noise = integrator.g(uprev,p,t)*W.dW
-  else
-    noise = integrator.g(uprev,p,t).*W.dW
+  for i in 1:order
+    dt_int = dt * i
+    sqdt_int = sqrt(dt_int)
+
+    _dW = map(x -> calc_twopoint_random(sqdt_int, x),  W.dW)
+
+    K = uprev .+ dt_int .* integrator.f(uprev,p,t)
+
+    if !is_diagonal_noise(integrator.sol.prob) || typeof(W.dW) <: Number
+      noise = integrator.g(uprev,p,t)*_dW
+    else
+      noise = integrator.g(uprev,p,t).*_dW
+    end
+    #u += @.. expcoeforder[i]*integrator.alg.func(K + noise)
+    u += @.. expcoeforder[i]*(K + noise)
   end
-  u = K + noise
 
   integrator.u = u
 end
@@ -20,7 +33,7 @@ end
 
   @.. u = uprev + dt * rtmp1
 
-  integrator.g(rtmp2,u_choice,p,t)
+  integrator.g(rtmp2,u,p,t)
 
   if is_diagonal_noise(integrator.sol.prob)
     @.. rtmp2 *= W.dW

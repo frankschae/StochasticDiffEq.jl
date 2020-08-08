@@ -2,7 +2,6 @@
  Tests for extrapolation methods
 """
 
-
 import Statistics # for mean values of trajectories
 import LinearAlgebra # for the normn
 using StochasticDiffEq
@@ -53,14 +52,14 @@ seeds = rand(UInt, numtraj)
 
 prob = SDEProblem(f,g,u₀,tspan)
 ensemble_prob = EnsembleProblem(prob;
-        output_func = (sol,i) -> (h1(asinh(sol[end])),false),
+        output_func = (sol,i) -> (h1(asinh(sol[end][1])),false),
         prob_func = prob_func
         )
-_solutions = @time generate_weak_solutions(ensemble_prob, EXEM(), dts, numtraj, ensemblealg=EnsembleThreads())
+_solutions = @time generate_weak_solutions(ensemble_prob, EXEM(x -> h1(asinh(x)), order=1), dts, numtraj, ensemblealg=EnsembleThreads())
 
 errors = [LinearAlgebra.norm(Statistics.mean(sol.u)) for sol in _solutions]
 m = log(errors[end]/errors[1])/log(dts[end]/dts[1])
-@test -(m-2) < 0.3
+@test -(m-1) < 0.3
 
 using Plots; convergence_plot = plot(dts, errors, xaxis=:log, yaxis=:log)
 #savefig(convergence_plot, "Exem.pdf")

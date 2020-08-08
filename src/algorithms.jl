@@ -366,12 +366,24 @@ struct SMEB <: StochasticDiffEqAlgorithm end
 
 # Extrapolation
 
-struct EXEM <: StochasticDiffEqAlgorithm
-  sequence::Symbol
-  order::Int
+"""
+Kloeden, P. E., Platen, E., and Hofmann, N., Extrapolation Methods for the Weak
+Approximation of Ito Diffusions, SIAM Journal on Numerical Analysis 32,
+pp. 1519 - 1534 (1995)
+
+Talay, D., and Tubaro, L., Expansion of the global error for numerical  schemes solving
+stochastic differential equations, Stochastic analysis and applications 8,
+pp. 483 - 509 (1990)
+"""
+struct EXEM{ftype} <: StochasticDiffEqAlgorithm
+  func::ftype # function in the expected value
+  sequence::Symbol # Romberg sequence
+  order::Int # extrapolation order
+  max_order::Int #maximal order that is currently supported
 end
-function EXEM(;sequence=:Romberg, order=2)
-  EXEM(sequence,order)
+function EXEM(func;sequence=:Romberg, order=2)
+  max_order = 5
+  EXEM(func,sequence,order,max_order)
 end
 
 
